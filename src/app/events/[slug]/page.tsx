@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CapacityBar } from "@/components/CapacityBar";
+import { RegistrationForm } from "@/components/RegistrationForm";
 import { StatusChip } from "@/components/StatusChip";
 import { formatDateRange, formatFullDate, todayInKL } from "@/lib/dates";
 import {
@@ -97,25 +98,7 @@ export default async function EventDetailPage({
       {/* Registration panel */}
       <section className="mt-8 rounded-lg border border-neutral-200 p-5">
         {canRegister ? (
-          <>
-            <h2 className="text-lg font-semibold">Register for this event</h2>
-            <p className="mt-1 text-sm text-neutral-600">
-              {isFull
-                ? "This event is full. New sign-ups join the waitlist and we'll let you know if a spot opens up."
-                : "Free entry. Reserve your spot in a few seconds."}
-            </p>
-            {/* The working form + transaction arrive in Milestone 3. */}
-            <button
-              type="button"
-              disabled
-              className="mt-4 cursor-not-allowed rounded-md bg-brand px-4 py-2 font-medium text-white opacity-60"
-            >
-              {isFull ? "Join the waitlist" : "Register"}
-            </button>
-            <p className="mt-2 text-xs text-neutral-400">
-              The registration form goes live in Milestone 3.
-            </p>
-          </>
+          <RegistrationForm slug={event.slug} isFull={isFull} />
         ) : (
           <>
             <h2 className="text-lg font-semibold text-neutral-700">
