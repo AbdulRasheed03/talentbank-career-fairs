@@ -19,6 +19,9 @@ local.db-wal
 .env
 .env*.local
 
+# local verification screenshots (not part of the app)
+/screenshots
+
 # misc
 .DS_Store
 *.pem
