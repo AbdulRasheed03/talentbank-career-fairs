@@ -4,6 +4,7 @@
 # next.js
 /.next
 /out
+*.tsbuildinfo
 
 # production
 /build
@@ -17,6 +18,9 @@ local.db-wal
 # env — keep .env.example, ignore real values
 .env
 .env*.local
+
+# local verification screenshots (not part of the app)
+/screenshots
 
 # misc
 .DS_Store
