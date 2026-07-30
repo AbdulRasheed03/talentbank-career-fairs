@@ -8,6 +8,13 @@
       "when": 1785203134964,
       "tag": "0000_wet_black_widow",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1785376548626,
+      "tag": "0001_gray_enchantress",
+      "breakpoints": true
     }
   ]
 }

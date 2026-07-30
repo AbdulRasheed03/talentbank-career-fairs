@@ -1,27 +1,32 @@
 // ---------------------------------------------------------------------------
 // Access control (RBAC) — the single rule the middleware enforces.
 // ---------------------------------------------------------------------------
-// Two roles, kept strictly apart:
-//   - visitor (no admin cookie): may use the public site, never /admin/*
-//   - admin  (valid cookie):     confined to /admin/*, kept off the public site
+// Three roles, kept apart:
+//   - null  (visitor, not logged in): public site + the login/register pages.
+//   - "user"  (logged-in public user): public site; NOT /admin.
+//   - "admin" (the seeded admin):      confined to /admin/*.
 //
-// Pure function so the whole policy is unit tested (tests/access.test.ts)
-// without spinning up the edge runtime. Returns the path to redirect to, or
-// null to allow the request through.
-export function accessRedirect(pathname: string, authed: boolean): string | null {
+// Pure function so the whole policy is unit tested (tests/access.test.ts).
+// Returns the path to redirect to, or null to allow the request through.
+export type Role = "user" | "admin" | null;
+
+export function accessRedirect(pathname: string, role: Role): string | null {
   const isAdminArea = pathname === "/admin" || pathname.startsWith("/admin/");
-  const isLoginPage = pathname === "/admin";
+  const isAuthPage = pathname === "/login" || pathname === "/register";
 
   if (isAdminArea) {
-    // Not signed in → bounce to the login page.
-    if (!authed && !isLoginPage) return "/admin";
-    // Already signed in → skip the login page.
-    if (authed && isLoginPage) return "/admin/events";
+    if (role === "admin") return null; // admins belong here
+    return role === null ? "/login" : "/"; // visitor → login; user → home
+  }
+
+  if (isAuthPage) {
+    // Already logged in? No need to see login/register.
+    if (role === "admin") return "/admin/events";
+    if (role === "user") return "/";
     return null;
   }
 
-  // Public area: a signed-in admin doesn't belong here — send them back to
-  // their dashboard. Visitors pass through freely.
-  if (authed) return "/admin/events";
+  // Public area: admins are confined to /admin; visitors and users pass through.
+  if (role === "admin") return "/admin/events";
   return null;
 }

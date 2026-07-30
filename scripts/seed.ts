@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { db } from "../src/db";
-import { events, notifications, registrations } from "../src/db/schema";
+import { events, notifications, registrations, users } from "../src/db/schema";
+import { hashPassword } from "../src/lib/passwords";
 import { SEED_EVENTS } from "./seed-data";
 
 // ---------------------------------------------------------------------------
@@ -57,6 +58,30 @@ async function main() {
   await db.delete(notifications);
   await db.delete(registrations);
   await db.delete(events);
+  await db.delete(users);
+
+  // Accounts: the single admin (seeded directly — never creatable via the
+  // public register form) plus one demo user so reviewers can try both sides.
+  await db.insert(users).values([
+    {
+      name: "Talentbank Admin",
+      username: "admin",
+      email: "admin@talentbank.io",
+      passwordHash: hashPassword("talentbank2026"),
+      role: "admin",
+      attendeeType: "candidate",
+      createdAt: now,
+    },
+    {
+      name: "Demo Candidate",
+      username: "demo",
+      email: "demo@example.com",
+      passwordHash: hashPassword("demo12345"),
+      role: "user",
+      attendeeType: "candidate",
+      createdAt: now,
+    },
+  ]);
 
   // Insert events, keep their generated ids by slug.
   const inserted = await db
@@ -124,8 +149,8 @@ async function main() {
   }
 
   console.log(
-    `Done. ${SEED_EVENTS.length} events, ${totalConfirmed} confirmed + ` +
-      `${totalWaitlisted} waitlisted registrations, ` +
+    `Done. 2 accounts (admin + demo), ${SEED_EVENTS.length} events, ` +
+      `${totalConfirmed} confirmed + ${totalWaitlisted} waitlisted registrations, ` +
       `${totalNotifications} outbox notifications.`,
   );
 }
