@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CapacityBar } from "@/components/CapacityBar";
+import { PageBand } from "@/components/marketing/PageBand";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { StatusChip } from "@/components/StatusChip";
 import { formatDateRange, todayInKL } from "@/lib/dates";
@@ -40,26 +41,23 @@ export default async function EventsPage({
     <div className="min-h-screen bg-paper text-navy-900">
       <SiteHeader user={user ? { name: user.name } : null} />
 
-      {/* Navy title band */}
-      <section className="bg-navy-900 text-paper">
-        <div className="mx-auto max-w-[1280px] px-6 pb-20 pt-36 lg:px-16">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-champagne">
-            <span aria-hidden className="h-px w-8 bg-gold" />
-            The 2026 calendar
-          </p>
-          <h1
-            className="mt-4 max-w-3xl font-serif font-light leading-[1.05] tracking-[-0.02em]"
-            style={{ fontSize: "clamp(2.5rem, 5vw, 3.6rem)" }}
-          >
-            Career fairs across Malaysia,{" "}
-            <em className="headline-italic">2026</em>.
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-paper/80">
-            Every Talentbank career fair this year — dates, cities and how full
-            each one is. Choose a fair to see the details and register.
-          </p>
-        </div>
-      </section>
+      <PageBand>
+        <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-champagne">
+          <span aria-hidden className="h-px w-8 bg-gold" />
+          The 2026 calendar
+        </p>
+        <h1
+          className="mt-4 max-w-3xl font-serif font-light leading-[1.05] tracking-[-0.02em]"
+          style={{ fontSize: "clamp(2.5rem, 5vw, 3.6rem)" }}
+        >
+          Career fairs across Malaysia,{" "}
+          <em className="headline-italic">2026</em>.
+        </h1>
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-paper/80">
+          Every Talentbank career fair this year — dates, cities and how full
+          each one is. Choose a fair to see the details and register.
+        </p>
+      </PageBand>
 
       {/* Paper listing */}
       <main className="mx-auto max-w-[1280px] px-6 pb-24 pt-12 lg:px-16">

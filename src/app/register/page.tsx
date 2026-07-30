@@ -1,3 +1,4 @@
+import { PageBand } from "@/components/marketing/PageBand";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { getCurrentUser } from "@/lib/session-server";
@@ -11,23 +12,25 @@ export default async function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-paper text-navy-900">
-      <SiteHeader user={user ? { name: user.name } : null} solid />
+      <SiteHeader user={user ? { name: user.name } : null} />
 
-      <main className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-sm flex-col justify-center px-6 pb-10 pt-28">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-champagne-deep">
+      <PageBand>
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-champagne">
           Join Talentbank
         </p>
         <h1
-          className="mt-2 font-serif font-light tracking-[-0.02em]"
-          style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+          className="mt-4 font-serif font-light tracking-[-0.02em]"
+          style={{ fontSize: "clamp(2.5rem, 4.5vw, 3.3rem)" }}
         >
-          Create your account
+          Create your <em className="headline-italic">account</em>.
         </h1>
-        <p className="mt-2 text-sm text-warm-grey">
+        <p className="mt-4 max-w-md text-lg text-paper/80">
           Sign up to register for Talentbank career fairs across Malaysia.
         </p>
+      </PageBand>
 
-        <div className="mt-6 rounded-lg border border-paper-deep bg-cream p-6">
+      <main className="mx-auto max-w-sm px-6 py-14">
+        <div className="rounded-lg border border-paper-deep bg-cream p-6">
           <RegisterForm />
         </div>
       </main>

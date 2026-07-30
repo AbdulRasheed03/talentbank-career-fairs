@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CapacityBar } from "@/components/CapacityBar";
+import { PageBand } from "@/components/marketing/PageBand";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { StatusChip } from "@/components/StatusChip";
@@ -36,13 +37,12 @@ export default async function EventDetailPage({
       <SiteHeader user={user ? { name: user.name } : null} />
 
       {/* Navy title band */}
-      <section className="bg-navy-900 text-paper">
-        <div className="mx-auto max-w-3xl px-6 pb-14 pt-32 lg:px-8">
-          <Link href="/events" className="text-sm font-medium text-paper/60 hover:text-paper">
-            ← All career fairs
-          </Link>
+      <PageBand narrow>
+        <Link href="/events" className="text-sm font-medium text-paper/60 hover:text-paper">
+          ← All career fairs
+        </Link>
 
-          <div className="mt-4 flex items-start justify-between gap-4">
+        <div className="mt-4 flex items-start justify-between gap-4">
             <h1
               className={`font-serif font-light leading-[1.1] tracking-[-0.02em] ${
                 status === "cancelled" ? "text-paper/50 line-through" : ""
@@ -66,8 +66,7 @@ export default async function EventDetailPage({
               <span className="block text-paper/60">{event.city}</span>
             </Fact>
           </dl>
-        </div>
-      </section>
+      </PageBand>
 
       {/* Paper body */}
       <main className="mx-auto max-w-3xl px-6 pb-24 pt-10 lg:px-8">
