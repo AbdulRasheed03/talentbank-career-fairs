@@ -30,13 +30,13 @@ export default async function EditEventPage({
   const cancelled = event.status === "cancelled";
 
   return (
-    <>
+    <div className="min-h-screen bg-paper text-navy-900">
       <AdminNav />
-      <main className="mx-auto max-w-2xl px-6 py-8">
-        <Link href="/admin/events" className="text-sm text-neutral-500 hover:text-neutral-800">
+      <main className="mx-auto max-w-2xl px-6 py-10">
+        <Link href="/admin/events" className="text-sm text-warm-grey hover:text-navy-900">
           ← Back to events
         </Link>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight">{event.title}</h1>
+        <h1 className="mt-3 font-serif text-3xl font-light tracking-tight">{event.title}</h1>
 
         {saved && (
           <p className="mt-4 rounded-md border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-800">
@@ -89,6 +89,6 @@ export default async function EditEventPage({
           </section>
         )}
       </main>
-    </>
+    </div>
   );
 }

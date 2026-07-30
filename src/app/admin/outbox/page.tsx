@@ -7,10 +7,10 @@ export default async function OutboxPage() {
   const rows = await getOutbox();
 
   return (
-    <>
+    <div className="min-h-screen bg-paper text-navy-900">
       <AdminNav />
-      <main className="mx-auto max-w-4xl px-6 py-8">
-        <h1 className="text-2xl font-bold tracking-tight">Outbox</h1>
+      <main className="mx-auto max-w-4xl px-6 py-10">
+        <h1 className="font-serif text-3xl font-light tracking-tight">Outbox</h1>
         <p className="mt-1 text-sm text-neutral-600">
           In production these would be emails. Here they&apos;re just recorded so
           you can see what would have been sent.
@@ -48,6 +48,6 @@ export default async function OutboxPage() {
           </div>
         )}
       </main>
-    </>
+    </div>
   );
 }

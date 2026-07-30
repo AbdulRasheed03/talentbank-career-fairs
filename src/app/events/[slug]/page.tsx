@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CapacityBar } from "@/components/CapacityBar";
+import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { StatusChip } from "@/components/StatusChip";
 import { formatDateRange, formatFullDate, todayInKL } from "@/lib/dates";
@@ -31,133 +32,127 @@ export default async function EventDetailPage({
   const isFull = status === "full";
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
-      <Link
-        href="/"
-        className="text-sm font-medium text-neutral-500 hover:text-neutral-800"
-      >
-        ← All career fairs
-      </Link>
+    <div className="min-h-screen bg-paper text-navy-900">
+      <SiteHeader user={user ? { name: user.name } : null} solid />
 
-      <div className="mt-4 flex items-start justify-between gap-4">
-        <h1
-          className={`text-3xl font-bold tracking-tight ${
-            status === "cancelled" ? "text-neutral-500 line-through" : ""
-          }`}
+      <main className="mx-auto max-w-3xl px-6 pb-24 pt-28 lg:px-8">
+        <Link
+          href="/events"
+          className="text-sm font-medium text-warm-grey hover:text-navy-900"
         >
-          {event.title}
-        </h1>
-        <StatusChip kind={status} />
-      </div>
+          ← All career fairs
+        </Link>
 
-      {/* State banners */}
-      {status === "cancelled" && (
-        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
-          <p className="font-semibold text-brand">This event has been cancelled.</p>
-          {event.cancellationReason && (
-            <p className="mt-1 text-sm text-neutral-700">
-              {event.cancellationReason}
-            </p>
-          )}
+        <div className="mt-4 flex items-start justify-between gap-4">
+          <h1
+            className={`font-serif font-light leading-[1.1] tracking-[-0.02em] ${
+              status === "cancelled" ? "text-warm-grey-light line-through" : ""
+            }`}
+            style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)" }}
+          >
+            {event.title}
+          </h1>
+          <StatusChip kind={status} />
         </div>
-      )}
-      {status === "past" && (
-        <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
-          <p className="font-medium text-neutral-700">
-            This event has already taken place.
-          </p>
-        </div>
-      )}
 
-      {/* Facts */}
-      <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-        <Fact label="When">
-          {singleDay
-            ? formatFullDate(event.startDate)
-            : formatDateRange(event.startDate, event.endDate)}
-          <span className="block text-neutral-500">{event.timeLabel}</span>
-        </Fact>
-        <Fact label="Where">
-          {event.venue}
-          <span className="block text-neutral-500">{event.city}</span>
-        </Fact>
-      </dl>
-
-      <p className="mt-6 leading-relaxed text-neutral-700">
-        {event.description}
-      </p>
-
-      {/* Capacity — meaningful only for upcoming events */}
-      {canRegister && (
-        <div className="mt-8 max-w-sm">
-          <CapacityBar
-            confirmed={event.confirmedCount}
-            capacity={event.capacity}
-          />
-        </div>
-      )}
-
-      {/* Registration panel */}
-      <section className="mt-8 rounded-lg border border-neutral-200 p-5">
-        {canRegister ? (
-          user ? (
-            <RegistrationForm
-              slug={event.slug}
-              isFull={isFull}
-              calendarUrl={googleCalendarUrl(event)}
-              userName={user.name}
-              userEmail={user.email}
-            />
-          ) : (
-            <div>
-              <h2 className="text-lg font-semibold">Register for this event</h2>
-              <p className="mt-1 text-sm text-neutral-600">
-                {isFull
-                  ? "This event is full — log in to join the waitlist."
-                  : "Log in or create a free account to reserve your spot."}
-              </p>
-              <div className="mt-4 flex gap-3">
-                <Link
-                  href={`/login?next=/events/${event.slug}`}
-                  className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/register"
-                  className="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:border-neutral-400"
-                >
-                  Create account
-                </Link>
-              </div>
-            </div>
-          )
-        ) : (
-          <>
-            <h2 className="text-lg font-semibold text-neutral-700">
-              Registration closed
-            </h2>
-            <p className="mt-1 text-sm text-neutral-600">
-              {status === "cancelled"
-                ? "This event was cancelled, so registration is closed."
-                : "This event has ended, so registration is closed."}
-            </p>
-          </>
+        {/* State banners */}
+        {status === "cancelled" && (
+          <div className="mt-5 rounded-lg border border-redx/30 bg-redx/5 p-4">
+            <p className="font-semibold text-redx">This event has been cancelled.</p>
+            {event.cancellationReason && (
+              <p className="mt-1 text-sm text-warm-grey">{event.cancellationReason}</p>
+            )}
+          </div>
         )}
-      </section>
+        {status === "past" && (
+          <div className="mt-5 rounded-lg border border-paper-deep bg-cream p-4">
+            <p className="font-medium text-warm-grey">
+              This event has already taken place.
+            </p>
+          </div>
+        )}
 
-      {/* Add to Google Calendar — only useful for upcoming events */}
-      {canRegister && (
-        <a
-          href={googleCalendarUrl(event)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
-        >
-          Add to Google Calendar →
-        </a>
-      )}
-    </main>
+        {/* Facts */}
+        <dl className="mt-8 grid gap-6 sm:grid-cols-2">
+          <Fact label="When">
+            {singleDay
+              ? formatFullDate(event.startDate)
+              : formatDateRange(event.startDate, event.endDate)}
+            <span className="block text-warm-grey">{event.timeLabel}</span>
+          </Fact>
+          <Fact label="Where">
+            {event.venue}
+            <span className="block text-warm-grey">{event.city}</span>
+          </Fact>
+        </dl>
+
+        <p className="mt-6 leading-relaxed text-warm-grey">{event.description}</p>
+
+        {canRegister && (
+          <div className="mt-8 max-w-sm">
+            <CapacityBar confirmed={event.confirmedCount} capacity={event.capacity} />
+          </div>
+        )}
+
+        {/* Registration panel */}
+        <section className="mt-8 rounded-lg border border-paper-deep bg-cream p-6">
+          {canRegister ? (
+            user ? (
+              <RegistrationForm
+                slug={event.slug}
+                isFull={isFull}
+                calendarUrl={googleCalendarUrl(event)}
+                userName={user.name}
+                userEmail={user.email}
+              />
+            ) : (
+              <div>
+                <h2 className="font-serif text-xl">Register for this event</h2>
+                <p className="mt-1 text-sm text-warm-grey">
+                  {isFull
+                    ? "This event is full — log in to join the waitlist."
+                    : "Log in or create a free account to reserve your spot."}
+                </p>
+                <div className="mt-4 flex gap-3">
+                  <Link
+                    href={`/login?next=/events/${event.slug}`}
+                    className="rounded-md bg-redx px-4 py-2 text-sm font-medium text-white hover:bg-redx-deep"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="rounded-md border border-navy-900 px-4 py-2 text-sm font-medium text-navy-900 transition-colors hover:bg-navy-900 hover:text-paper"
+                  >
+                    Create account
+                  </Link>
+                </div>
+              </div>
+            )
+          ) : (
+            <>
+              <h2 className="font-serif text-xl text-warm-grey">Registration closed</h2>
+              <p className="mt-1 text-sm text-warm-grey">
+                {status === "cancelled"
+                  ? "This event was cancelled, so registration is closed."
+                  : "This event has ended, so registration is closed."}
+              </p>
+            </>
+          )}
+        </section>
+
+        {canRegister && (
+          <a
+            href={googleCalendarUrl(event)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-champagne-deep hover:underline"
+          >
+            Add to Google Calendar →
+          </a>
+        )}
+      </main>
+    </div>
   );
 }
 
@@ -170,10 +165,10 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
+      <dt className="text-xs font-medium uppercase tracking-[0.18em] text-champagne-deep">
         {label}
       </dt>
-      <dd className="mt-1 font-medium text-neutral-900">{children}</dd>
+      <dd className="mt-1 font-medium text-navy-900">{children}</dd>
     </div>
   );
 }

@@ -21,12 +21,12 @@ export default async function AdminEventsPage({
   const sorted = [...all].sort((a, b) => (a.startDate < b.startDate ? -1 : 1));
 
   return (
-    <>
+    <div className="min-h-screen bg-paper text-navy-900">
       <AdminNav />
-      <main className="mx-auto max-w-5xl px-6 py-8">
+      <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Career fairs</h1>
+            <h1 className="font-serif text-3xl font-light tracking-tight">Career fairs</h1>
             <p className="mt-1 text-sm text-neutral-600">
               {all.length} events. Edit details, move dates, or cancel.
             </p>
@@ -124,6 +124,6 @@ export default async function AdminEventsPage({
           </div>
         )}
       </main>
-    </>
+    </div>
   );
 }

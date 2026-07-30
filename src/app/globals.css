@@ -1,3 +1,73 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Design tokens for the "Institutional Authority" marketing site (talentbank.io
+   aesthetic). The functional app (/events, /admin, ...) keeps its own clean
+   white/red styling; these tokens drive the marketing landing at /.
+--------------------------------------------------------------------------- */
+:root {
+  /* Surfaces */
+  --paper: #f8f4ec;
+  --paper-deep: #e8e0ce;
+  --cream: #faf7f0;
+  --navy-900: #0a1f44;
+  --navy-800: #122a55;
+  --navy-700: #1e3a6f;
+
+  /* Accents */
+  --champagne: #b89253;
+  --champagne-deep: #9a7942;
+  --champagne-soft: #e8d9b8;
+  --gold-line: #c9a66b;
+  --red-accent: #d6231f;
+  --red-deep: #b01813;
+
+  /* Text */
+  --warm-grey: #6b6358;
+  --warm-grey-light: #a39a8c;
+
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Signature move: headlines mix upright roman + italic gold closing clause.
+   Fraunces exposes real italics, so <em class="headline-italic"> is gold + italic. */
+.headline-italic {
+  font-style: italic;
+  color: var(--champagne-deep);
+}
+
+/* Vertical "SCROLL" label in the hero. */
+.vertical-rl {
+  writing-mode: vertical-rl;
+}
+
+/* Client-wall marquee (duplicated list scrolls up for a seamless loop). */
+@keyframes marquee-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+.marquee-up {
+  animation: marquee-up 30s linear infinite;
+}
+.marquee-pause:hover .marquee-up {
+  animation-play-state: paused;
+}
+
+/* Hard requirement from the brief: kill motion for reduced-motion users. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
