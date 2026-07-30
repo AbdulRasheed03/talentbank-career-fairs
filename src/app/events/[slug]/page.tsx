@@ -33,31 +33,46 @@ export default async function EventDetailPage({
 
   return (
     <div className="min-h-screen bg-paper text-navy-900">
-      <SiteHeader user={user ? { name: user.name } : null} solid />
+      <SiteHeader user={user ? { name: user.name } : null} />
 
-      <main className="mx-auto max-w-3xl px-6 pb-24 pt-28 lg:px-8">
-        <Link
-          href="/events"
-          className="text-sm font-medium text-warm-grey hover:text-navy-900"
-        >
-          ← All career fairs
-        </Link>
+      {/* Navy title band */}
+      <section className="bg-navy-900 text-paper">
+        <div className="mx-auto max-w-3xl px-6 pb-14 pt-32 lg:px-8">
+          <Link href="/events" className="text-sm font-medium text-paper/60 hover:text-paper">
+            ← All career fairs
+          </Link>
 
-        <div className="mt-4 flex items-start justify-between gap-4">
-          <h1
-            className={`font-serif font-light leading-[1.1] tracking-[-0.02em] ${
-              status === "cancelled" ? "text-warm-grey-light line-through" : ""
-            }`}
-            style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)" }}
-          >
-            {event.title}
-          </h1>
-          <StatusChip kind={status} />
+          <div className="mt-4 flex items-start justify-between gap-4">
+            <h1
+              className={`font-serif font-light leading-[1.1] tracking-[-0.02em] ${
+                status === "cancelled" ? "text-paper/50 line-through" : ""
+              }`}
+              style={{ fontSize: "clamp(2rem, 4vw, 2.9rem)" }}
+            >
+              {event.title}
+            </h1>
+            <StatusChip kind={status} />
+          </div>
+
+          <dl className="mt-8 grid gap-6 sm:grid-cols-2">
+            <Fact label="When">
+              {singleDay
+                ? formatFullDate(event.startDate)
+                : formatDateRange(event.startDate, event.endDate)}
+              <span className="block text-paper/60">{event.timeLabel}</span>
+            </Fact>
+            <Fact label="Where">
+              {event.venue}
+              <span className="block text-paper/60">{event.city}</span>
+            </Fact>
+          </dl>
         </div>
+      </section>
 
-        {/* State banners */}
+      {/* Paper body */}
+      <main className="mx-auto max-w-3xl px-6 pb-24 pt-10 lg:px-8">
         {status === "cancelled" && (
-          <div className="mt-5 rounded-lg border border-redx/30 bg-redx/5 p-4">
+          <div className="rounded-lg border border-redx/30 bg-redx/5 p-4">
             <p className="font-semibold text-redx">This event has been cancelled.</p>
             {event.cancellationReason && (
               <p className="mt-1 text-sm text-warm-grey">{event.cancellationReason}</p>
@@ -65,28 +80,14 @@ export default async function EventDetailPage({
           </div>
         )}
         {status === "past" && (
-          <div className="mt-5 rounded-lg border border-paper-deep bg-cream p-4">
+          <div className="rounded-lg border border-paper-deep bg-cream p-4">
             <p className="font-medium text-warm-grey">
               This event has already taken place.
             </p>
           </div>
         )}
 
-        {/* Facts */}
-        <dl className="mt-8 grid gap-6 sm:grid-cols-2">
-          <Fact label="When">
-            {singleDay
-              ? formatFullDate(event.startDate)
-              : formatDateRange(event.startDate, event.endDate)}
-            <span className="block text-warm-grey">{event.timeLabel}</span>
-          </Fact>
-          <Fact label="Where">
-            {event.venue}
-            <span className="block text-warm-grey">{event.city}</span>
-          </Fact>
-        </dl>
-
-        <p className="mt-6 leading-relaxed text-warm-grey">{event.description}</p>
+        <p className="mt-2 leading-relaxed text-warm-grey">{event.description}</p>
 
         {canRegister && (
           <div className="mt-8 max-w-sm">
@@ -165,10 +166,10 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-[0.18em] text-champagne-deep">
+      <dt className="text-xs font-medium uppercase tracking-[0.18em] text-champagne">
         {label}
       </dt>
-      <dd className="mt-1 font-medium text-navy-900">{children}</dd>
+      <dd className="mt-1 font-medium text-paper">{children}</dd>
     </div>
   );
 }
