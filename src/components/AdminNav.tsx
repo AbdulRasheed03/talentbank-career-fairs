@@ -15,9 +15,8 @@ export function AdminNav() {
           <Link href="/admin/outbox" className="text-neutral-600 hover:text-brand">
             Outbox
           </Link>
-          <Link href="/" className="text-neutral-600 hover:text-brand">
-            View public site
-          </Link>
+          {/* No "view public site" link: an admin session is confined to
+              /admin by the RBAC middleware — log out to browse as a visitor. */}
         </nav>
         <form action={logout}>
           <button
