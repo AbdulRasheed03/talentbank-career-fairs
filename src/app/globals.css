@@ -44,6 +44,22 @@
   writing-mode: vertical-rl;
 }
 
+/* Client-wall marquee (duplicated list scrolls up for a seamless loop). */
+@keyframes marquee-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+.marquee-up {
+  animation: marquee-up 30s linear infinite;
+}
+.marquee-pause:hover .marquee-up {
+  animation-play-state: paused;
+}
+
 /* Hard requirement from the brief: kill motion for reduced-motion users. */
 @media (prefers-reduced-motion: reduce) {
   *,

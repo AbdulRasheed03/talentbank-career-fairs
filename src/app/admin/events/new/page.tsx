@@ -7,13 +7,13 @@ export const dynamic = "force-dynamic";
 
 export default function NewEventPage() {
   return (
-    <>
+    <div className="min-h-screen bg-paper text-navy-900">
       <AdminNav />
-      <main className="mx-auto max-w-2xl px-6 py-8">
-        <Link href="/admin/events" className="text-sm text-neutral-500 hover:text-neutral-800">
+      <main className="mx-auto max-w-2xl px-6 py-10">
+        <Link href="/admin/events" className="text-sm text-warm-grey hover:text-navy-900">
           ← Back to events
         </Link>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight">Add event</h1>
+        <h1 className="mt-3 font-serif text-3xl font-light tracking-tight">Add event</h1>
         <p className="mt-1 text-sm text-neutral-600">
           Fill in the details. You&apos;ll see a clash warning if it overlaps
           another fair in the same city.
@@ -22,6 +22,6 @@ export default function NewEventPage() {
           <EventForm action={createEvent} submitLabel="Create event" />
         </div>
       </main>
-    </>
+    </div>
   );
 }

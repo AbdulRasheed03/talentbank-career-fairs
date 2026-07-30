@@ -19,15 +19,15 @@ export default async function RegistrantsPage({
   const { confirmed, waitlisted } = await getRegistrationsForEvent(eventId);
 
   return (
-    <>
+    <div className="min-h-screen bg-paper text-navy-900">
       <AdminNav />
-      <main className="mx-auto max-w-4xl px-6 py-8">
-        <Link href="/admin/events" className="text-sm text-neutral-500 hover:text-neutral-800">
+      <main className="mx-auto max-w-4xl px-6 py-10">
+        <Link href="/admin/events" className="text-sm text-warm-grey hover:text-navy-900">
           ← Back to events
         </Link>
         <div className="mt-3 flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Who&apos;s registered</h1>
+            <h1 className="font-serif text-3xl font-light tracking-tight">Who&apos;s registered</h1>
             <p className="mt-1 text-sm text-neutral-600">{event.title}</p>
           </div>
           {/* Download link — a GET route streams the CSV (events team lives in sheets). */}
@@ -50,7 +50,7 @@ export default async function RegistrantsPage({
           emptyText="Nobody on the waitlist."
         />
       </main>
-    </>
+    </div>
   );
 }
 
