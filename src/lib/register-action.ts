@@ -8,43 +8,22 @@ import { todayInKL } from "@/lib/dates";
 import {
   decideRegistrationStatus,
   isUniqueViolation,
-  registrationSchema,
-  type RegisterFieldErrors,
   type RegisterState,
 } from "@/lib/registration";
+import { getCurrentUser } from "@/lib/session-server";
 
-// Server action behind the public registration form. Runs on every submit.
-// The form passes the event slug as a hidden field; everything else is
-// validated server-side because we never trust client input (SPEC rule 7).
+// Register the logged-in user for an event. Identity (name/email/type) comes
+// from their account — never from the client — so we only need the event slug.
 export async function registerForEvent(
   _prev: RegisterState,
   formData: FormData,
 ): Promise<RegisterState> {
-  const slug = String(formData.get("slug") ?? "");
-
-  const parsed = registrationSchema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    attendeeType: formData.get("attendeeType"),
-  });
-
-  if (!parsed.success) {
-    const fieldErrors: RegisterFieldErrors = {};
-    for (const issue of parsed.error.issues) {
-      const field = issue.path[0];
-      if (field === "name" || field === "email" || field === "attendeeType") {
-        fieldErrors[field] ??= issue.message;
-      }
-    }
-    return {
-      kind: "error",
-      message: "Please fix the highlighted fields.",
-      fieldErrors,
-    };
+  const user = await getCurrentUser();
+  if (!user || user.role !== "user") {
+    return { kind: "error", message: "Please log in to register." };
   }
 
-  const { name, email, attendeeType } = parsed.data;
-
+  const slug = String(formData.get("slug") ?? "");
   const [event] = await db
     .select()
     .from(events)
@@ -54,9 +33,6 @@ export async function registerForEvent(
   if (!event) {
     return { kind: "error", message: "Sorry, that event could not be found." };
   }
-
-  // Re-check the registration window server-side (matches deriveStatus on the
-  // page): cancelled and past events are closed.
   if (event.status === "cancelled") {
     return {
       kind: "error",
@@ -71,8 +47,7 @@ export async function registerForEvent(
   }
 
   try {
-    // One transaction: recount confirmed, decide confirmed vs waitlisted, then
-    // insert — so the capacity check and the write see a consistent snapshot.
+    // One transaction: recount confirmed, decide confirmed vs waitlisted, insert.
     const outcome = await db.transaction(async (tx) => {
       const [row] = await tx
         .select({ n: sql<number>`count(*)` })
@@ -83,32 +58,28 @@ export async function registerForEvent(
             eq(registrations.status, "confirmed"),
           ),
         );
-
-      const confirmedCount = Number(row?.n ?? 0);
-      const decided = decideRegistrationStatus(confirmedCount, event.capacity);
-
+      const decided = decideRegistrationStatus(
+        Number(row?.n ?? 0),
+        event.capacity,
+      );
       await tx.insert(registrations).values({
         eventId: event.id,
-        name,
-        email,
-        attendeeType,
+        name: user.name,
+        email: user.email,
+        attendeeType: user.attendeeType,
         status: decided,
       });
-
       return decided;
     });
 
-    // Refresh the pages whose numbers just changed.
     revalidatePath(`/events/${slug}`);
     revalidatePath("/");
-
     return { kind: "success", outcome };
   } catch (err) {
-    // Duplicate sign-up (unique on eventId+email) → friendly message, not a 500.
     if (isUniqueViolation(err)) {
       return {
         kind: "error",
-        message: "You're already registered for this event with this email.",
+        message: "You're already registered for this event.",
       };
     }
     throw err;

@@ -3,34 +3,39 @@ import assert from "node:assert/strict";
 import { accessRedirect } from "../src/lib/access";
 
 // ---------------------------------------------------------------------------
-// RBAC policy tests — the two roles are kept strictly apart.
-// null = allowed through; a string = redirect target.
+// RBAC policy tests. Roles: null (visitor), "user", "admin".
+// null return = allowed through; a string = redirect target.
 // ---------------------------------------------------------------------------
 
-test("visitor (not authed) is blocked from admin pages", () => {
-  assert.equal(accessRedirect("/admin/events", false), "/admin");
-  assert.equal(accessRedirect("/admin/events/5/edit", false), "/admin");
-  assert.equal(accessRedirect("/admin/events/5/registrants/csv", false), "/admin");
-  assert.equal(accessRedirect("/admin/outbox", false), "/admin");
+test("visitor is blocked from admin pages (→ login)", () => {
+  assert.equal(accessRedirect("/admin/events", null), "/login");
+  assert.equal(accessRedirect("/admin/events/5/edit", null), "/login");
+  assert.equal(accessRedirect("/admin/outbox", null), "/login");
 });
 
-test("visitor can use the public site and the login page", () => {
-  assert.equal(accessRedirect("/", false), null);
-  assert.equal(accessRedirect("/events/some-fair", false), null);
-  assert.equal(accessRedirect("/admin", false), null); // login page
+test("logged-in user is blocked from admin pages (→ home)", () => {
+  assert.equal(accessRedirect("/admin/events", "user"), "/");
+  assert.equal(accessRedirect("/admin/events/5/registrants/csv", "user"), "/");
 });
 
-test("admin (authed) is confined to /admin and kept off the public site", () => {
-  assert.equal(accessRedirect("/", true), "/admin/events");
-  assert.equal(accessRedirect("/events/some-fair", true), "/admin/events");
+test("visitors and users can browse the public site", () => {
+  for (const role of [null, "user"] as const) {
+    assert.equal(accessRedirect("/", role), null);
+    assert.equal(accessRedirect("/events/some-fair", role), null);
+  }
 });
 
-test("admin on the login page is sent to the dashboard", () => {
-  assert.equal(accessRedirect("/admin", true), "/admin/events");
+test("admin is confined to /admin and kept off the public site", () => {
+  assert.equal(accessRedirect("/", "admin"), "/admin/events");
+  assert.equal(accessRedirect("/events/some-fair", "admin"), "/admin/events");
+  assert.equal(accessRedirect("/admin/events", "admin"), null);
+  assert.equal(accessRedirect("/admin", "admin"), null);
 });
 
-test("admin can move freely within /admin", () => {
-  assert.equal(accessRedirect("/admin/events", true), null);
-  assert.equal(accessRedirect("/admin/events/5/edit", true), null);
-  assert.equal(accessRedirect("/admin/outbox", true), null);
+test("login/register are hidden from users who are already logged in", () => {
+  assert.equal(accessRedirect("/login", null), null); // visitor sees it
+  assert.equal(accessRedirect("/register", null), null);
+  assert.equal(accessRedirect("/login", "user"), "/");
+  assert.equal(accessRedirect("/register", "user"), "/");
+  assert.equal(accessRedirect("/login", "admin"), "/admin/events");
 });

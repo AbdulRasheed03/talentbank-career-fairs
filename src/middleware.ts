@@ -1,20 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { accessRedirect } from "@/lib/access";
-import { ADMIN_COOKIE } from "@/lib/admin-cookie";
+import { SESSION_COOKIE, verifySession } from "@/lib/session";
 
 // ---------------------------------------------------------------------------
-// Role gate (SPEC rule 5, extended to strict RBAC). DELIBERATE SIMPLIFICATION:
-// there are no user accounts — a single shared passcode (ADMIN_PASSCODE) marks
-// a session as "admin" via an httpOnly cookie. The two roles don't overlap:
-// visitors can't reach /admin, and an admin session is kept out of the public
-// site. The actual policy lives in accessRedirect() so it can be unit tested.
+// Role gate. Reads the signed session cookie, works out the role (visitor /
+// user / admin), and applies the RBAC policy in accessRedirect(). Verification
+// uses Web Crypto so it runs in the edge runtime. See src/lib/access.ts.
 // ---------------------------------------------------------------------------
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const authed =
-    req.cookies.get(ADMIN_COOKIE)?.value === process.env.ADMIN_PASSCODE;
+  const session = await verifySession(req.cookies.get(SESSION_COOKIE)?.value);
+  const role = session?.role ?? null;
 
-  const target = accessRedirect(pathname, authed);
+  const target = accessRedirect(pathname, role);
   if (target && target !== pathname) {
     const url = req.nextUrl.clone();
     url.pathname = target;

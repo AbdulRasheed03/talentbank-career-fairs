@@ -76,7 +76,32 @@ export const notifications = sqliteTable("notifications", {
     .default(sql`(current_timestamp)`),
 });
 
+// ---------------------------------------------------------------------------
+// users — real accounts (login + register)
+// ---------------------------------------------------------------------------
+// Public visitors self-register as role 'user'. The single 'admin' account is
+// seeded directly (scripts/seed.ts) and can never be created through the public
+// register form. Passwords are stored hashed (see src/lib/passwords.ts).
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  role: text("role", { enum: ["user", "admin"] })
+    .notNull()
+    .default("user"),
+  attendeeType: text("attendee_type", { enum: ["candidate", "employer"] })
+    .notNull()
+    .default("candidate"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(current_timestamp)`),
+});
+
 // Inferred row types for use across the app.
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 export type Event = typeof events.$inferSelect;
 export type NewEvent = typeof events.$inferInsert;
 export type Registration = typeof registrations.$inferSelect;

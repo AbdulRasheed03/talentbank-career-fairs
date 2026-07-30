@@ -7,18 +7,21 @@ import type { RegisterState } from "@/lib/registration";
 
 const INITIAL: RegisterState = { kind: "idle" };
 
-const inputClass =
-  "block w-full rounded-md border border-neutral-300 px-3 py-2 text-sm " +
-  "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
-
+// Shown only to a logged-in public user. Registration is one click — the
+// server action uses their account identity. A confirmed spot pops a
+// confirmation with "Add to Google Calendar".
 export function RegistrationForm({
   slug,
   isFull,
   calendarUrl,
+  userName,
+  userEmail,
 }: {
   slug: string;
   isFull: boolean;
   calendarUrl: string;
+  userName: string;
+  userEmail: string;
 }) {
   const [state, formAction, pending] = useActionState(registerForEvent, INITIAL);
   const [modalClosed, setModalClosed] = useState(false);
@@ -27,7 +30,6 @@ export function RegistrationForm({
   const confirmed = success && state.outcome === "confirmed";
   const showModal = success && !modalClosed;
 
-  // Let Escape close the confirmation pop-up.
   useEffect(() => {
     if (!showModal) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setModalClosed(true);
@@ -38,7 +40,6 @@ export function RegistrationForm({
   if (success) {
     return (
       <>
-        {/* Inline confirmation stays on the page after the pop-up is closed. */}
         <div
           className={`rounded-md border p-4 ${
             confirmed ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"
@@ -75,39 +76,23 @@ export function RegistrationForm({
     );
   }
 
-  const fieldErrors = state.kind === "error" ? state.fieldErrors : undefined;
-
   return (
     <div>
       <h2 className="text-lg font-semibold">Register for this event</h2>
       <p className="mt-1 text-sm text-neutral-600">
         {isFull
-          ? "This event is full. Sign up to join the waitlist — we'll let you know if a spot opens up."
-          : "Free entry. Reserve your spot in a few seconds."}
+          ? "This event is full. Register to join the waitlist — we'll let you know if a spot opens up."
+          : "Free entry. Reserve your spot in one click."}
+      </p>
+      <p className="mt-2 text-sm text-neutral-500">
+        Registering as <span className="font-medium text-neutral-700">{userName}</span> ({userEmail})
       </p>
 
-      <form action={formAction} className="mt-4 space-y-4" noValidate>
+      <form action={formAction} className="mt-4">
         <input type="hidden" name="slug" value={slug} />
-
-        <Field label="Full name" error={fieldErrors?.name}>
-          <input name="name" type="text" autoComplete="name" className={inputClass} />
-        </Field>
-
-        <Field label="Email" error={fieldErrors?.email}>
-          <input name="email" type="email" autoComplete="email" className={inputClass} />
-        </Field>
-
-        <Field label="I'm registering as" error={fieldErrors?.attendeeType}>
-          <select name="attendeeType" defaultValue="candidate" className={inputClass}>
-            <option value="candidate">A candidate (job seeker)</option>
-            <option value="employer">An employer</option>
-          </select>
-        </Field>
-
         {state.kind === "error" && (
-          <p className="text-sm font-medium text-brand">{state.message}</p>
+          <p className="mb-3 text-sm font-medium text-brand">{state.message}</p>
         )}
-
         <button
           type="submit"
           disabled={pending}
@@ -120,8 +105,6 @@ export function RegistrationForm({
   );
 }
 
-// The success pop-up. For a confirmed spot it leads with "add to calendar" so
-// people can put the fair straight into their week (SPEC design intent).
 function ConfirmationModal({
   confirmed,
   calendarUrl,
@@ -138,11 +121,7 @@ function ConfirmationModal({
       aria-labelledby="reg-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
-      <div
-        className="absolute inset-0 bg-neutral-900/40"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-neutral-900/40" onClick={onClose} aria-hidden="true" />
       <div className="relative w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
         <h2 id="reg-modal-title" className="text-lg font-bold text-neutral-900">
           {confirmed ? "You're registered!" : "You're on the waitlist"}
@@ -152,7 +131,6 @@ function ConfirmationModal({
             ? "Your spot is reserved. Add it to your calendar so it's in your week."
             : "This event is full, so we've added you to the waitlist. We'll be in touch if a spot opens up."}
         </p>
-
         <div className="mt-5 flex flex-col gap-2">
           {confirmed && (
             <a
@@ -174,23 +152,5 @@ function ConfirmationModal({
         </div>
       </div>
     </div>
-  );
-}
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-neutral-800">{label}</span>
-      <div className="mt-1">{children}</div>
-      {error && <p className="mt-1 text-xs font-medium text-brand">{error}</p>}
-    </label>
   );
 }
