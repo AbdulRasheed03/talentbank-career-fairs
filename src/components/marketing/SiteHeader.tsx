@@ -7,16 +7,25 @@ import { contact, megaMenu, navTabs, wordmark } from "@/content/site";
 
 const EASE_QUART: [number, number, number, number] = [0.25, 1, 0.5, 1];
 
-export function SiteHeader({ user }: { user: { name: string } | null }) {
+export function SiteHeader({
+  user,
+  solid = false,
+}: {
+  user: { name: string } | null;
+  // `solid` forces the paper/navy state always — for pages with no dark hero
+  // behind the header (e.g. /events, /login).
+  solid?: boolean;
+}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    if (solid) return;
     const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [solid]);
 
   // Lock body scroll while the mega-menu is open.
   useEffect(() => {
@@ -26,7 +35,7 @@ export function SiteHeader({ user }: { user: { name: string } | null }) {
     };
   }, [menuOpen]);
 
-  const onDark = !scrolled; // transparent over the navy hero
+  const onDark = !solid && !scrolled; // transparent over the navy hero
   const textColor = onDark ? "text-paper" : "text-navy-900";
 
   return (
