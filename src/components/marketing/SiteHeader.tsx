@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { contact, megaMenu, navTabs, wordmark } from "@/content/site";
+import { logout } from "@/lib/auth-actions";
 
 const EASE_QUART: [number, number, number, number] = [0.25, 1, 0.5, 1];
 
@@ -80,26 +81,38 @@ export function SiteHeader({
         <div className="flex items-center gap-4">
           <div className="hidden items-center gap-4 lg:flex">
             {user ? (
-              <Link
-                href="/events"
-                className={`text-[0.8125rem] font-medium uppercase tracking-[0.12em] ${textColor} hover:text-champagne`}
-              >
-                Hi, {user.name.split(" ")[0]}
-              </Link>
+              <>
+                <Link
+                  href="/events"
+                  className={`text-[0.8125rem] font-medium uppercase tracking-[0.12em] ${textColor} hover:text-champagne`}
+                >
+                  Hi, {user.name.split(" ")[0]}
+                </Link>
+                <form action={logout}>
+                  <button
+                    type="submit"
+                    className={`text-[0.8125rem] font-medium uppercase tracking-[0.12em] ${textColor} hover:text-champagne`}
+                  >
+                    Log out
+                  </button>
+                </form>
+              </>
             ) : (
-              <Link
-                href="/login"
-                className={`text-[0.8125rem] font-medium uppercase tracking-[0.12em] ${textColor} hover:text-champagne`}
-              >
-                Sign in
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  className={`text-[0.8125rem] font-medium uppercase tracking-[0.12em] ${textColor} hover:text-champagne`}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-md bg-redx px-4 py-2 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-white transition-colors hover:bg-redx-deep"
+                >
+                  Sign up <span aria-hidden>→</span>
+                </Link>
+              </>
             )}
-            <Link
-              href="/register"
-              className="rounded-md bg-redx px-4 py-2 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-white transition-colors hover:bg-redx-deep"
-            >
-              {user ? "My account" : "Sign up"} <span aria-hidden>→</span>
-            </Link>
           </div>
 
           <button
@@ -172,6 +185,17 @@ export function SiteHeader({
                   </div>
                 ))}
               </div>
+
+              {user && (
+                <form action={logout} className="mt-10">
+                  <button
+                    type="submit"
+                    className="font-serif text-xl text-navy-900 hover:text-champagne-deep"
+                  >
+                    Log out
+                  </button>
+                </form>
+              )}
 
               <div className="mt-12 border-t border-paper-deep pt-6 text-sm text-warm-grey">
                 <p>WhatsApp {contact.whatsapp}</p>

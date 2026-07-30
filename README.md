@@ -6,16 +6,18 @@ challenge — see [`SPEC.md`](./SPEC.md) for the full brief.
 **Live demo:** https://talentbank-career-fairs.vercel.app
 **Sign in:** https://talentbank-career-fairs.vercel.app/login (demo accounts below)
 
-The public side lists every 2026 fair grouped by month; visitors create an
-account (or log in) to register for an event (confirmed / waitlist / duplicate
-handling). The admin side — a single seeded account — manages events: create/edit
-with clash warnings, soft-cancel with a reason, capacity raises that promote the
-waitlist, a registrants view with CSV export, and an outbox of the notifications
-that would have been emailed.
+`/` is an editorial marketing landing (talentbank.io-inspired). The calendar
+lives at `/events`: every 2026 fair grouped by month; visitors log in or create
+an account to register for one (confirmed / waitlist / duplicate handling). The
+admin side — a single seeded account — manages events: create/edit with clash
+warnings, soft-cancel with a reason, capacity raises that promote the waitlist,
+a registrants view with CSV export, and an outbox of the notifications that
+would have been emailed.
 
 ## Stack
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
+- Fraunces + Inter via `next/font`; Framer Motion + Lenis power the marketing landing
 - Drizzle ORM + Turso / libSQL (local dev uses a `file:local.db` SQLite file)
 - Deploys to Vercel; the production database is Turso
 
@@ -29,8 +31,12 @@ npm run db:seed         # load real 2026 career fairs + demo data
 npm run dev             # http://localhost:3000
 ```
 
-Open `http://localhost:3000` for the public site and
-`http://localhost:3000/admin` for the admin side.
+Key routes:
+
+- `/` — marketing landing
+- `/events` — the 2026 career-fair calendar
+- `/login` · `/register` — accounts (the admin lands in the dashboard)
+- `/admin/*` — admin (passcode-free; the seeded admin account)
 
 ## Environment variables
 
