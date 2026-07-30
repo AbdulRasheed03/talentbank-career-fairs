@@ -18,7 +18,7 @@ export function LoginForm() {
     <form action={action} className="space-y-4">
       <label className="block">
         <span className="text-sm font-medium text-neutral-800">Username</span>
-        <input name="username" type="text" autoComplete="username" autoFocus className={inputClass} />
+        <input name="username" type="text" autoComplete="username" className={inputClass} />
       </label>
 
       <label className="block">

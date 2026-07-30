@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageBand } from "@/components/marketing/PageBand";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { contact } from "@/content/site";
 import { getCurrentUser } from "@/lib/session-server";
@@ -13,38 +14,36 @@ export default async function ComingSoonPage() {
     <>
       <SiteHeader user={user ? { name: user.name } : null} />
       <main>
-        <section className="flex min-h-[85vh] items-center bg-navy-900 text-paper">
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-32 lg:px-16">
-            <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-champagne">
-              <span aria-hidden className="h-px w-8 bg-gold" />
-              Launching soon
-            </p>
-            <h1
-              className="mt-6 max-w-3xl font-serif font-light leading-[1.05] tracking-[-0.02em]"
-              style={{ fontSize: "clamp(2.5rem, 4.5vw, 3.3rem)" }}
+        <PageBand>
+          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-champagne">
+            <span aria-hidden className="h-px w-8 bg-gold" />
+            Launching soon
+          </p>
+          <h1
+            className="mt-6 max-w-3xl font-serif font-light leading-[1.05] tracking-[-0.02em]"
+            style={{ fontSize: "clamp(2.5rem, 4.5vw, 3.3rem)" }}
+          >
+            This page is <em className="headline-italic">on its way</em>.
+          </h1>
+          <p className="mt-6 max-w-xl text-lg text-paper/80">
+            We&apos;re building this out. In the meantime, the full 2026 career-fair
+            calendar is already live.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <a
+              href={`mailto:${contact.email}`}
+              className="inline-flex items-center gap-2 rounded-md bg-redx px-6 py-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-white transition-colors hover:bg-redx-deep"
             >
-              This page is <em className="headline-italic">on its way</em>.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-paper/80">
-              We&apos;re building this out. In the meantime, the full 2026 career-fair
-              calendar is already live.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a
-                href={`mailto:${contact.email}`}
-                className="inline-flex items-center gap-2 rounded-md bg-redx px-6 py-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-white transition-colors hover:bg-redx-deep"
-              >
-                Contact us <span aria-hidden>→</span>
-              </a>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 rounded-md border border-paper/50 px-6 py-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-paper transition-colors hover:bg-paper hover:text-navy-900"
-              >
-                Back to home
-              </Link>
-            </div>
+              Contact us <span aria-hidden>→</span>
+            </a>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-md border border-paper/50 px-6 py-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-paper transition-colors hover:bg-paper hover:text-navy-900"
+            >
+              Back to home
+            </Link>
           </div>
-        </section>
+        </PageBand>
 
         <section className="bg-paper text-navy-900">
           <div className="mx-auto max-w-[1280px] px-6 py-16 lg:px-16">
