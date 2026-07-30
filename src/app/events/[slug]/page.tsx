@@ -98,7 +98,11 @@ export default async function EventDetailPage({
       {/* Registration panel */}
       <section className="mt-8 rounded-lg border border-neutral-200 p-5">
         {canRegister ? (
-          <RegistrationForm slug={event.slug} isFull={isFull} />
+          <RegistrationForm
+            slug={event.slug}
+            isFull={isFull}
+            calendarUrl={googleCalendarUrl(event)}
+          />
         ) : (
           <>
             <h2 className="text-lg font-semibold text-neutral-700">
