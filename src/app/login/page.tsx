@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/LoginForm";
+import { PublicHeader } from "@/components/PublicHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -6,7 +7,9 @@ export const dynamic = "force-dynamic";
 // admin lands in the admin dashboard (handled by the login action + middleware).
 export default function LoginPage() {
   return (
-    <main className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-6">
+    <>
+      <PublicHeader />
+      <main className="mx-auto flex min-h-[60vh] max-w-sm flex-col justify-center px-6 py-10">
       <h1 className="text-2xl font-bold tracking-tight">Sign in</h1>
       <p className="mt-2 text-sm text-neutral-600">
         Log in to register for career fairs — or to manage them as an admin.
@@ -21,6 +24,7 @@ export default function LoginPage() {
         Admin demo — username <code className="text-neutral-500">admin</code>, password{" "}
         <code className="text-neutral-500">talentbank2026</code>
       </p>
-    </main>
+      </main>
+    </>
   );
 }
